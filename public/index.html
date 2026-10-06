@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MODERNE | 의류 쇼핑몰</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Noto Sans KR', sans-serif; }
+    .tab-active { color: #111; border-color: #111; }
+  </style>
+</head>
+<body class="bg-white text-neutral-900">
+
+  <!-- 네비게이션 -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-neutral-200">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center gap-4">
+      <a href="#" class="text-2xl font-bold tracking-widest">MODERNE</a>
+
+      <nav class="hidden md:flex items-center gap-6 ml-8 text-sm font-medium">
+        <a href="#outer" class="hover:text-neutral-500">아우터</a>
+        <a href="#top" class="hover:text-neutral-500">상의</a>
+        <a href="#bottom" class="hover:text-neutral-500">하의</a>
+        <a href="#acc" class="hover:text-neutral-500">악세사리</a>
+      </nav>
+
+      <form class="ml-auto flex-1 max-w-xs relative" onsubmit="return false;">
+        <input id="search" type="search" placeholder="상품 검색"
+          class="w-full rounded-full bg-neutral-100 pl-4 pr-10 py-2 text-sm outline-none focus:ring-2 focus:ring-neutral-900" />
+        <svg class="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      </form>
+
+      <button class="relative p-2" aria-label="장바구니">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+        <span id="cart-count" class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-neutral-900 text-white text-[11px] flex items-center justify-center">0</span>
+      </button>
+    </div>
+
+    <!-- 모바일 카테고리 -->
+    <nav class="md:hidden flex justify-around border-t border-neutral-100 text-sm py-2">
+      <a href="#outer">아우터</a><a href="#top">상의</a><a href="#bottom">하의</a><a href="#acc">악세사리</a>
+    </nav>
+  </header>
+
+  <!-- 메인 배너 -->
+  <section class="relative h-[60vh] min-h-[380px] overflow-hidden">
+    <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=1800&q=80"
+      alt="2026 컬렉션" class="absolute inset-0 w-full h-full object-cover" />
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative h-full max-w-7xl mx-auto px-4 flex flex-col justify-center text-white">
+      <p class="text-sm tracking-[0.3em] mb-3">2026 AUTUMN / WINTER</p>
+      <h1 class="text-4xl md:text-6xl font-bold leading-tight">일상에 스며드는<br />고요한 스타일</h1>
+      <p class="mt-4 text-neutral-200 max-w-md font-light">꾸미지 않은 듯 세련된 베이직 컬렉션을 만나보세요.</p>
+      <a href="#outer" class="mt-8 w-fit bg-white text-neutral-900 px-8 py-3 text-sm font-medium hover:bg-neutral-200 transition">컬렉션 보기</a>
+    </div>
+  </section>
+
+  <!-- 카테고리 탭 -->
+  <div class="sticky top-16 z-40 bg-white border-b border-neutral-200 hidden md:block">
+    <div class="max-w-7xl mx-auto px-4 flex gap-8 text-sm" id="tabs">
+      <button data-cat="all" class="tab py-4 border-b-2 border-transparent tab-active">전체</button>
+      <button data-cat="outer" class="tab py-4 border-b-2 border-transparent text-neutral-500">아우터</button>
+      <button data-cat="top" class="tab py-4 border-b-2 border-transparent text-neutral-500">상의</button>
+      <button data-cat="bottom" class="tab py-4 border-b-2 border-transparent text-neutral-500">하의</button>
+      <button data-cat="acc" class="tab py-4 border-b-2 border-transparent text-neutral-500">악세사리</button>
+    </div>
+  </div>
+
+  <!-- 상품 리스트 -->
+  <main id="products" class="max-w-7xl mx-auto px-4 py-12 space-y-16"></main>
+
+  <footer class="border-t border-neutral-200 py-10 text-center text-xs text-neutral-500">
+    © 2026 MODERNE. All rights reserved.
+  </footer>
+
+  <script>
+    const U = (id) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=600&q=80`;
+    const data = {
+      outer: { title: '아우터', items: [
+        ['클래식 울 코트', 189000, 'photo-1539533018447-63fcce2678e3'],
+        ['오버핏 트렌치 코트', 159000, 'photo-1591047139829-d91aecb6caea'],
+        ['레더 라이더 자켓', 229000, 'photo-1551028719-00167b16eac5'],
+        ['패딩 숏 점퍼', 139000, 'photo-1544923246-77307dd654cb'] ]},
+      top: { title: '상의', items: [
+        ['베이직 코튼 티셔츠', 29000, 'photo-1521572163474-6864f9cf17ab'],
+        ['옥스포드 셔츠', 49000, 'photo-1596755094514-f87e34085b2c'],
+        ['오버사이즈 니트', 69000, 'photo-1434389677669-e08b4cac3105'],
+        ['후드 맨투맨', 55000, 'photo-1556821840-3a63f95609a7'] ]},
+      bottom: { title: '하의', items: [
+        ['와이드 데님 팬츠', 59000, 'photo-1542272604-787c3835535d'],
+        ['슬랙스 팬츠', 52000, 'photo-1473966968600-fa801b869a1a'],
+        ['플리츠 롱 스커트', 47000, 'photo-1583496661160-fb5886a13d77'],
+        ['카고 조거 팬츠', 54000, 'photo-1624378439575-d8705ad7ae80'] ]},
+      acc: { title: '악세사리', items: [
+        ['캔버스 토트백', 35000, 'photo-1590874103328-eac38a683ce7'],
+        ['울 머플러', 28000, 'photo-1520903920243-00d872a2d1c9'],
+        ['볼캡', 22000, 'photo-1588850561407-ed78c282e89b'],
+        ['레더 벨트', 32000, 'photo-1553062407-98eeb64c6a62'] ]},
+    };
+    const fallback = 'https://placehold.co/600x750/e5e5e5/737373?text=MODERNE';
+    const won = (n) => n.toLocaleString('ko-KR') + '원';
+
+    const root = document.getElementById('products');
+    root.innerHTML = Object.entries(data).map(([key, c]) => `
+      <section id="${key}" data-section="${key}" class="scroll-mt-32">
+        <h2 class="text-2xl font-bold mb-6">${c.title}</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8">
+          ${c.items.map(([name, price, img]) => `
+            <article class="product group" data-name="${name}">
+              <div class="aspect-[4/5] overflow-hidden bg-neutral-100">
+                <img src="${U(img)}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${fallback}'"
+                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              </div>
+              <h3 class="mt-3 text-sm">${name}</h3>
+              <p class="mt-1 font-bold">${won(price)}</p>
+              <button class="add-cart mt-3 w-full border border-neutral-900 py-2 text-sm hover:bg-neutral-900 hover:text-white transition">장바구니 담기</button>
+            </article>`).join('')}
+        </div>
+      </section>`).join('');
+
+    // 장바구니
+    let count = 0;
+    root.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('add-cart')) return;
+      document.getElementById('cart-count').textContent = ++count;
+      const b = e.target, t = b.textContent;
+      b.textContent = '담았습니다 ✓';
+      setTimeout(() => (b.textContent = t), 1000);
+    });
+
+    // 카테고리 탭 필터
+    document.getElementById('tabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('.tab'); if (!btn) return;
+      document.querySelectorAll('.tab').forEach(t => { t.classList.remove('tab-active'); t.classList.add('text-neutral-500'); });
+      btn.classList.add('tab-active'); btn.classList.remove('text-neutral-500');
+      const cat = btn.dataset.cat;
+      document.querySelectorAll('[data-section]').forEach(s => s.classList.toggle('hidden', cat !== 'all' && s.dataset.section !== cat));
+    });
+
+    // 검색
+    document.getElementById('search').addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      document.querySelectorAll('.product').forEach(p => p.classList.toggle('hidden', q && !p.dataset.name.toLowerCase().includes(q)));
+    });
+  </script>
+</body>
+</html>
