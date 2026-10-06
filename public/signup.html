@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>회원가입 | TRENDY_SHOP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>body { font-family: 'Noto Sans KR', sans-serif; }</style>
+</head>
+<body class="min-h-screen bg-neutral-50 text-neutral-900 flex flex-col">
+
+  <header class="py-6 text-center">
+    <a href="index.html" class="text-2xl font-bold tracking-widest">TRENDY_SHOP</a>
+  </header>
+
+  <main class="flex-1 flex items-center justify-center px-4 pb-16">
+    <div class="w-full max-w-md bg-white border border-neutral-200 shadow-sm p-8 sm:p-10">
+      <h1 class="text-xl font-bold text-center">회원가입</h1>
+      <p class="mt-2 text-sm text-neutral-500 text-center font-light">간단한 정보로 가입하고 쇼핑을 시작해 보세요.</p>
+
+      <form id="signup-form" class="mt-8 space-y-4">
+        <div>
+          <label for="name" class="block text-xs font-medium mb-1.5">이름</label>
+          <input id="name" type="text" autocomplete="name" required placeholder="홍길동"
+            class="w-full border border-neutral-300 px-4 py-3 text-sm placeholder:text-neutral-400 outline-none focus:border-neutral-900 transition" />
+        </div>
+        <div>
+          <label for="email" class="block text-xs font-medium mb-1.5">이메일</label>
+          <input id="email" type="email" autocomplete="email" required placeholder="example@email.com"
+            class="w-full border border-neutral-300 px-4 py-3 text-sm placeholder:text-neutral-400 outline-none focus:border-neutral-900 transition" />
+        </div>
+        <div>
+          <label for="pw" class="block text-xs font-medium mb-1.5">비밀번호</label>
+          <input id="pw" type="password" autocomplete="new-password" required minlength="6" placeholder="6자 이상 입력하세요"
+            class="w-full border border-neutral-300 px-4 py-3 text-sm placeholder:text-neutral-400 outline-none focus:border-neutral-900 transition" />
+        </div>
+        <div>
+          <label for="pw2" class="block text-xs font-medium mb-1.5">비밀번호 확인</label>
+          <input id="pw2" type="password" autocomplete="new-password" required placeholder="비밀번호를 다시 입력하세요"
+            class="w-full border border-neutral-300 px-4 py-3 text-sm placeholder:text-neutral-400 outline-none focus:border-neutral-900 transition" />
+        </div>
+        <label class="flex items-start gap-2 text-xs text-neutral-600">
+          <input id="agree" type="checkbox" required class="mt-0.5 accent-neutral-900" />
+          <span>이용약관 및 개인정보 처리방침에 동의합니다. (필수)</span>
+        </label>
+
+        <p id="msg" role="alert" class="hidden text-xs"></p>
+        <button id="submit" type="submit" class="w-full bg-neutral-900 text-white py-3.5 text-sm font-medium hover:bg-black transition disabled:opacity-60">가입하기</button>
+      </form>
+
+      <p class="mt-6 text-center text-xs text-neutral-500">
+        이미 계정이 있으신가요? <a href="login.html" class="text-neutral-900 font-medium underline">로그인</a>
+      </p>
+    </div>
+  </main>
+
+  <script>
+    const sb = supabase.createClient(
+      'https://ufxtbxbpqfbrfkzqggte.supabase.co',
+      'sb_publishable_IR5BPytyjwWunxNGrqLiuQ_FHKbCWTd'
+    );
+    const msg = document.getElementById('msg');
+    const show = (t, ok) => {
+      msg.textContent = t;
+      msg.className = 'text-xs ' + (ok ? 'text-green-700' : 'text-red-600');
+    };
+
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pw = document.getElementById('pw').value;
+      if (pw !== document.getElementById('pw2').value) return show('비밀번호가 일치하지 않습니다.');
+
+      const btn = document.getElementById('submit');
+      btn.disabled = true;
+      const { data, error } = await sb.auth.signUp({
+        email: document.getElementById('email').value.trim(),
+        password: pw,
+        options: {
+          data: { name: document.getElementById('name').value.trim() },
+          emailRedirectTo: location.origin + '/login.html',
+        },
+      });
+      btn.disabled = false;
+
+      if (error) return show(error.message.includes('registered') ? '이미 가입된 이메일입니다.' : '가입에 실패했습니다: ' + error.message);
+      if (data.session) return (location.href = 'index.html');
+      show('가입 확인 메일을 보냈습니다. 메일의 링크를 누른 뒤 로그인해 주세요.', true);
+    });
+  </script>
+</body>
+</html>
